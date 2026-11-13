@@ -56,6 +56,11 @@ pub fn toggle_command() -> String {
         .map(PathBuf::from)
         .or_else(|| std::env::current_exe().ok())
         .unwrap_or_else(|| PathBuf::from("digup"));
+    // A press while the last one is still being answered (the first, just after login, can take a while) is dropped:
+    // queued presses would flip the panel open and shut again.
+    #[cfg(target_os = "linux")]
+    return format!("flock -n /tmp/digup-toggle.lock {} --toggle", quoted(&program.display().to_string()));
+    #[cfg(not(target_os = "linux"))]
     format!("{} --toggle", quoted(&program.display().to_string()))
 }
 
