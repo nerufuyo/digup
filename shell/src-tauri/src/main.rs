@@ -1575,10 +1575,11 @@ fn neru_look() -> Value {
         use gio::prelude::*;
         let has = gio::SettingsSchemaSource::default().is_some_and(|source| source.lookup("org.neru.desktop", true).is_some());
         if has {
-            return json!({"opacity": gio::Settings::new("org.neru.desktop").int("opacity")});
+            let look = gio::Settings::new("org.neru.desktop");
+            return json!({"opacity": look.int("opacity"), "accent": look.string("accent").as_str(), "tint": look.string("tint").as_str()});
         }
     }
-    json!({"opacity": 80})
+    json!({"opacity": 80, "accent": "#E8472B", "tint": "#1C1C1E"})
 }
 
 /// Pages hear of a change in the look as it is made.
